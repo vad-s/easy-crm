@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {Breadcrumb, Icon, Input, Layout, List, Typography, Button} from 'antd';
@@ -11,7 +10,6 @@ import {Link} from 'react-router-dom';
 
 const {Header, Content, Sider} = Layout;
 const {Title} = Typography;
-
 
 class ContactInfo extends Component {
   constructor(props) {
@@ -43,35 +41,31 @@ class ContactInfo extends Component {
     }
   };
 
-
   componentDidMount = async () => {
     const id = this.props.match.params.id;
     const response = await fetch(`${id}`);
     const result = await response.json();
     if (result) {
       this.setState({currentUser: result.contact});
-
-      // await this.props.addOneContact(this.state.currentUser);
       await this.props.addOneContact(result.contact);
     }
-    // if (this.props.notes && this.props.notes.length === 0) {
       this.fetchNotesForCurrentUser(id);
-    // }
   };
-  fetchEditContact = async (id) => {
 
+  fetchEditContact = async (id) => {
+    const { name, company, companyDetails, email, address, phone} = this.state;
     const response = await fetch(`/contacts/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        name: this.state.name,
-        company: this.state.company,
-        companyDetails: this.state.companyDetails,
-        email: this.state.email,
-        address: this.state.address,
-        phone: this.state.phone,
+        name,
+        company,
+        companyDetails,
+        email,
+        address,
+        phone,
         updated: Date.now()
       })
     });
@@ -102,10 +96,9 @@ class ContactInfo extends Component {
         creatorId,
         updated
       ];
-      console.log("dataToProps", dataToProps);
       this.props.editContact(dataToProps);
     } else {
-      alert("Wrong username or password!");
+      console.log('Wrong username or password!');
     }
   };
 
@@ -124,8 +117,6 @@ class ContactInfo extends Component {
     newState[name] = e.target.value;
     this.setState(newState);
   };
-
-
 
   render() {
     if (this.props.currentContact) {
